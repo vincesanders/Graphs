@@ -41,7 +41,40 @@ class Graph:
         Print each vertex in breadth-first order
         beginning from starting_vertex.
         """
-        pass  # TODO
+        visited = {}
+        vertices_to_visit = [] # TODO change to linked list
+        vertices_string = ''
+        current = starting_vertex
+        while current != None:
+            if current in visited:
+                if len(vertices_to_visit) is 0:
+                    current = None
+                    break
+                current = vertices_to_visit.pop()
+                continue
+            visited[current] = self.vertices[current]
+            vertices_string += str(current)
+            visited[current] = True
+            neighbors = self.get_neighbors(current) # get neighbors
+            # if no neighbors
+            if len(neighbors) is 0:
+                # check vertices_to_visit
+                if len(vertices_to_visit) is 0:
+                    current = None
+                    break
+                current = vertices_to_visit.pop(0)
+            # if 1 or more neighbors
+            else:
+                for v in neighbors:
+                    if v in visited:
+                        continue
+                    vertices_to_visit.append(v)
+                if len(vertices_to_visit) is 0:
+                    current = None
+                    break
+                current = vertices_to_visit.pop(0)
+        print(vertices_string)
+        return vertices_string
 
     def dft(self, starting_vertex):
         """
