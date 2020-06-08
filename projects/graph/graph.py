@@ -192,14 +192,41 @@ class Graph:
             raise Exception(f'There is not a vertex with id {starting_vertex} in the graph.')
         if destination_vertex not in self.vertices:
             raise Exception(f'There is not a vertex with id {destination_vertex} in the graph.')
-        # find all possible paths from start to dest
-        paths = []
         visited = {}
         vertices_to_visit = Stack() # TODO change to linked list
-        vertices_string = ''
+        path = []
         current = starting_vertex
-        # return shortest path
-        pass  # TODO
+        while current != None:
+            if current in visited:
+                if vertices_to_visit.size is 0:
+                    current = None
+                    break
+                current = vertices_to_visit.pop()
+                continue
+            visited[current] = self.vertices[current]
+            path.append(current)
+            if current == destination_vertex:
+                break
+            visited[current] = True
+            neighbors = self.get_neighbors(current) # get neighbors
+            # if no neighbors
+            if len(neighbors) is 0:
+                # check vertices_to_visit
+                if vertices_to_visit.size() is 0:
+                    current = None
+                    break
+                current = vertices_to_visit.pop()
+            # if 1 or more neighbors
+            else:
+                for v in neighbors:
+                    if v in visited:
+                        continue
+                    vertices_to_visit.push(v)
+                if vertices_to_visit.size() is 0:
+                    current = None
+                    break
+                current = vertices_to_visit.pop()
+        print(path)
 
     def dfs_recursive(self, starting_vertex, destination_vertex):
         """
