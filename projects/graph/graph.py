@@ -44,7 +44,7 @@ class Graph:
         if starting_vertex not in self.vertices:
             raise Exception(f'There is not a vertex with id {starting_vertex} in the graph.')
         visited = {}
-        vertices_to_visit = Queue() # TODO change to linked list
+        vertices_to_visit = Queue()
         # vertices_string = ''
         current = starting_vertex
         while current != None:
@@ -86,7 +86,7 @@ class Graph:
         if starting_vertex not in self.vertices:
             raise Exception(f'There is not a vertex with id {starting_vertex} in the graph.')
         visited = {}
-        vertices_to_visit = Stack() # TODO change to linked list
+        vertices_to_visit = Stack()
         # vertices_string = ''
         current = starting_vertex
         while current != None:
@@ -159,7 +159,7 @@ class Graph:
         visited = {}
         distance = {}
         predecessor = {}
-        vertices_to_visit = Queue() # TODO change to linked list
+        vertices_to_visit = Queue()
         visited[starting_vertex] = True
         distance[starting_vertex] = 0
         vertices_to_visit.enqueue(starting_vertex)
