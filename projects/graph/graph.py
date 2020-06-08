@@ -125,7 +125,22 @@ class Graph:
 
         This should be done using recursion.
         """
-        pass  # TODO
+        visited = {}
+        def traverse_post_order(vertex, values=[]):
+            if vertex not in visited:
+                visited[vertex] = True
+                values.append(vertex)
+            for v in self.vertices[vertex]:
+                if v not in visited:
+                    visited[v] = True
+                    values.append(v)
+                    traverse_post_order(v)
+            return values
+        post_order_list = traverse_post_order(starting_vertex)
+        vertices_string = ''
+        for n in post_order_list:
+            vertices_string += f'{str(n)}, '
+        print(vertices_string[:(len(vertices_string) - 2)])
 
     def bfs(self, starting_vertex, destination_vertex):
         """
