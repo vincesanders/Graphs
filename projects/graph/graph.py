@@ -45,7 +45,7 @@ class Graph:
             raise Exception(f'There is not a vertex with id {starting_vertex} in the graph.')
         visited = {}
         vertices_to_visit = Queue() # TODO change to linked list
-        vertices_string = ''
+        # vertices_string = ''
         current = starting_vertex
         while current != None:
             if current in visited:
@@ -55,7 +55,8 @@ class Graph:
                 current = vertices_to_visit.dequeue()
                 continue
             visited[current] = self.vertices[current]
-            vertices_string += f'{str(current)}, '
+            # vertices_string += f'{str(current)}, '
+            print(current)
             visited[current] = True
             neighbors = self.get_neighbors(current) # get neighbors
             # if no neighbors
@@ -75,7 +76,7 @@ class Graph:
                     current = None
                     break
                 current = vertices_to_visit.dequeue()
-        print(vertices_string[:(len(vertices_string) - 2)]) # don't include the last ,_
+        # print(vertices_string[:(len(vertices_string) - 2)]) # don't include the last ,_
 
     def dft(self, starting_vertex):
         """
@@ -86,7 +87,7 @@ class Graph:
             raise Exception(f'There is not a vertex with id {starting_vertex} in the graph.')
         visited = {}
         vertices_to_visit = Stack() # TODO change to linked list
-        vertices_string = ''
+        # vertices_string = ''
         current = starting_vertex
         while current != None:
             if current in visited:
@@ -96,7 +97,8 @@ class Graph:
                 current = vertices_to_visit.pop()
                 continue
             visited[current] = self.vertices[current]
-            vertices_string += f'{str(current)}, '
+            # vertices_string += f'{str(current)}, '
+            print(current)
             visited[current] = True
             neighbors = self.get_neighbors(current) # get neighbors
             # if no neighbors
@@ -116,7 +118,7 @@ class Graph:
                     current = None
                     break
                 current = vertices_to_visit.pop()
-        print(vertices_string[:(len(vertices_string) - 2)]) # don't include the last ,_
+        # print(vertices_string[:(len(vertices_string) - 2)]) # don't include the last ,_
 
     def dft_recursive(self, starting_vertex):
         """
@@ -138,10 +140,11 @@ class Graph:
                     traverse_pre_order(v)
             return values
         pre_order_list = traverse_pre_order(starting_vertex)
-        vertices_string = ''
+        # vertices_string = ''
         for n in pre_order_list:
-            vertices_string += f'{str(n)}, '
-        print(vertices_string[:(len(vertices_string) - 2)])
+            # vertices_string += f'{str(n)}, '
+            print(n)
+        # print(vertices_string[:(len(vertices_string) - 2)])
 
     def bfs(self, starting_vertex, destination_vertex):
         """
