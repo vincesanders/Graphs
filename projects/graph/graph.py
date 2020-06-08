@@ -195,19 +195,18 @@ class Graph:
         # Get all possible paths to destination
         def get_dfs_paths(starting_vertex, destination_vertex):
             stack = Stack()
-            stack.push((starting_vertex, starting_vertex))
+            stack.push((starting_vertex, [starting_vertex]))
             while stack.size() is not 0:
                 current = stack.pop()
                 vertex = current[0]
                 path = current[1]
                 for v in self.vertices[vertex] - set(path):
                     if v == destination_vertex:
-                        path.append(v)
-                        # must use yield or you will only get the first path that gets to destination
-                        yield path
+                        # Must use yield or will only get the first path to reach the destination
+                        # we need to continue through the loops to get all possible paths
+                        yield path + [v]
                     else:
-                        path.append(v)
-                        stack.push((v, path))
+                        stack.push((v, path + [v]))
         generator = get_dfs_paths(starting_vertex, destination_vertex)
         first_path = True
         shortest_path = None
@@ -233,9 +232,17 @@ class Graph:
             if starting_vertex == destination_vertex:
                 yield path
             for v in self.vertices[starting_vertex] - set(path):
-                path.append(v)
-                yield from get_dfs_paths(v, destination_vertex, path)
-        pass
+                yield from get_dfs_paths(v, destination_vertex, path + [v])
+        generator = get_dfs_paths(starting_vertex, destination_vertex)
+        first_path = True
+        shortest_path = None
+        for path in generator:
+            if first_path:
+                first_path = False
+                shortest_path = path
+            if (len(path) < len(shortest_path)):
+                shortest_path = path
+        return shortest_path
 
 if __name__ == '__main__':
     graph = Graph()  # Instantiate your graph
