@@ -41,47 +41,82 @@ class Graph:
         Print each vertex in breadth-first order
         beginning from starting_vertex.
         """
+        if starting_vertex not in self.vertices:
+            raise Exception(f'There is not a vertex with id {starting_vertex} in the graph.')
         visited = {}
-        vertices_to_visit = [] # TODO change to linked list
+        vertices_to_visit = Queue() # TODO change to linked list
         vertices_string = ''
         current = starting_vertex
         while current != None:
             if current in visited:
-                if len(vertices_to_visit) is 0:
+                if vertices_to_visit.size is 0:
                     current = None
                     break
-                current = vertices_to_visit.pop()
+                current = vertices_to_visit.dequeue()
                 continue
             visited[current] = self.vertices[current]
-            vertices_string += str(current)
+            vertices_string += f'{str(current)}, '
             visited[current] = True
             neighbors = self.get_neighbors(current) # get neighbors
             # if no neighbors
             if len(neighbors) is 0:
                 # check vertices_to_visit
-                if len(vertices_to_visit) is 0:
+                if vertices_to_visit.size is 0:
                     current = None
                     break
-                current = vertices_to_visit.pop(0)
+                current = vertices_to_visit.dequeue()
             # if 1 or more neighbors
             else:
                 for v in neighbors:
                     if v in visited:
                         continue
-                    vertices_to_visit.append(v)
-                if len(vertices_to_visit) is 0:
+                    vertices_to_visit.enqueue(v)
+                if vertices_to_visit.size is 0:
                     current = None
                     break
-                current = vertices_to_visit.pop(0)
-        print(vertices_string)
-        return vertices_string
+                current = vertices_to_visit.dequeue()
+        print(vertices_string[:(len(vertices_string) - 2)]) # don't include the last ,_
 
     def dft(self, starting_vertex):
         """
         Print each vertex in depth-first order
         beginning from starting_vertex.
         """
-        pass  # TODO
+        if starting_vertex not in self.vertices:
+            raise Exception(f'There is not a vertex with id {starting_vertex} in the graph.')
+        visited = {}
+        vertices_to_visit = Stack() # TODO change to linked list
+        vertices_string = ''
+        current = starting_vertex
+        while current != None:
+            if current in visited:
+                if vertices_to_visit.size is 0:
+                    current = None
+                    break
+                current = vertices_to_visit.pop()
+                continue
+            visited[current] = self.vertices[current]
+            vertices_string += f'{str(current)}, '
+            visited[current] = True
+            neighbors = self.get_neighbors(current) # get neighbors
+            # if no neighbors
+            if len(neighbors) is 0:
+                # check vertices_to_visit
+                if vertices_to_visit.size is 0:
+                    current = None
+                    break
+                current = vertices_to_visit.pop()
+            # if 1 or more neighbors
+            else:
+                for v in neighbors:
+                    if v in visited:
+                        continue
+                    vertices_to_visit.push(v)
+                if vertices_to_visit.size is 0:
+                    current = None
+                    break
+                current = vertices_to_visit.pop()
+        print(vertices_string[:(len(vertices_string) - 2)]) # don't include the last ,_
 
     def dft_recursive(self, starting_vertex):
         """
