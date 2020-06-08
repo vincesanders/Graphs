@@ -49,7 +49,7 @@ class Graph:
         current = starting_vertex
         while current != None:
             if current in visited:
-                if vertices_to_visit.size is 0:
+                if vertices_to_visit.size() is 0:
                     current = None
                     break
                 current = vertices_to_visit.dequeue()
@@ -61,7 +61,7 @@ class Graph:
             # if no neighbors
             if len(neighbors) is 0:
                 # check vertices_to_visit
-                if vertices_to_visit.size is 0:
+                if vertices_to_visit.size() is 0:
                     current = None
                     break
                 current = vertices_to_visit.dequeue()
@@ -71,7 +71,7 @@ class Graph:
                     if v in visited:
                         continue
                     vertices_to_visit.enqueue(v)
-                if vertices_to_visit.size is 0:
+                if vertices_to_visit.size() is 0:
                     current = None
                     break
                 current = vertices_to_visit.dequeue()
@@ -102,7 +102,7 @@ class Graph:
             # if no neighbors
             if len(neighbors) is 0:
                 # check vertices_to_visit
-                if vertices_to_visit.size is 0:
+                if vertices_to_visit.size() is 0:
                     current = None
                     break
                 current = vertices_to_visit.pop()
@@ -112,7 +112,7 @@ class Graph:
                     if v in visited:
                         continue
                     vertices_to_visit.push(v)
-                if vertices_to_visit.size is 0:
+                if vertices_to_visit.size() is 0:
                     current = None
                     break
                 current = vertices_to_visit.pop()
@@ -126,7 +126,8 @@ class Graph:
         This should be done using recursion.
         """
         visited = {}
-        def traverse_post_order(vertex, values=[]):
+        # none of the listed solutions support post order traversal.
+        def traverse_pre_order(vertex, values=[]):
             if vertex not in visited:
                 visited[vertex] = True
                 values.append(vertex)
@@ -134,11 +135,11 @@ class Graph:
                 if v not in visited:
                     visited[v] = True
                     values.append(v)
-                    traverse_post_order(v)
+                    traverse_pre_order(v)
             return values
-        post_order_list = traverse_post_order(starting_vertex)
+        pre_order_list = traverse_pre_order(starting_vertex)
         vertices_string = ''
-        for n in post_order_list:
+        for n in pre_order_list:
             vertices_string += f'{str(n)}, '
         print(vertices_string[:(len(vertices_string) - 2)])
 
@@ -148,7 +149,38 @@ class Graph:
         starting_vertex to destination_vertex in
         breath-first order.
         """
-        pass  # TODO
+        if starting_vertex not in self.vertices:
+            raise Exception(f'There is not a vertex with id {starting_vertex} in the graph.')
+        if destination_vertex not in self.vertices:
+            raise Exception(f'There is not a vertex with id {destination_vertex} in the graph.')
+        visited = {}
+        distance = {}
+        predecessor = {}
+        vertices_to_visit = Queue() # TODO change to linked list
+        visited[starting_vertex] = True
+        distance[starting_vertex] = 0
+        vertices_to_visit.enqueue(starting_vertex)
+
+        while vertices_to_visit.size() != 0:
+            current = vertices_to_visit.dequeue()
+            if len(self.vertices[current]) is 0:
+                continue
+            for v in self.vertices[current]:
+                if v not in visited:
+                    visited[v] = True
+                    distance[v] = distance[current] + 1
+                    predecessor[v] = current
+                    vertices_to_visit.enqueue(v)
+                    if v == destination_vertex:
+                        break
+        # TODO use a more effecient method of creating shortest path. ll, queue?
+        shortest_path = []
+        current = destination_vertex
+        shortest_path.append(current)
+        while current in predecessor:
+            shortest_path.insert(0, predecessor[current])
+            current = predecessor[current]
+        return shortest_path
 
     def dfs(self, starting_vertex, destination_vertex):
         """
@@ -156,6 +188,17 @@ class Graph:
         starting_vertex to destination_vertex in
         depth-first order.
         """
+        if starting_vertex not in self.vertices:
+            raise Exception(f'There is not a vertex with id {starting_vertex} in the graph.')
+        if destination_vertex not in self.vertices:
+            raise Exception(f'There is not a vertex with id {destination_vertex} in the graph.')
+        # find all possible paths from start to dest
+        paths = []
+        visited = {}
+        vertices_to_visit = Stack() # TODO change to linked list
+        vertices_string = ''
+        current = starting_vertex
+        # return shortest path
         pass  # TODO
 
     def dfs_recursive(self, starting_vertex, destination_vertex):
