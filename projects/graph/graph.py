@@ -192,41 +192,32 @@ class Graph:
             raise Exception(f'There is not a vertex with id {starting_vertex} in the graph.')
         if destination_vertex not in self.vertices:
             raise Exception(f'There is not a vertex with id {destination_vertex} in the graph.')
-        visited = {}
-        vertices_to_visit = Stack() # TODO change to linked list
-        path = []
-        current = starting_vertex
-        while current != None:
-            if current in visited:
-                if vertices_to_visit.size is 0:
-                    current = None
-                    break
-                current = vertices_to_visit.pop()
-                continue
-            visited[current] = self.vertices[current]
-            path.append(current)
-            if current == destination_vertex:
-                break
-            visited[current] = True
-            neighbors = self.get_neighbors(current) # get neighbors
-            # if no neighbors
-            if len(neighbors) is 0:
-                # check vertices_to_visit
-                if vertices_to_visit.size() is 0:
-                    current = None
-                    break
-                current = vertices_to_visit.pop()
-            # if 1 or more neighbors
-            else:
-                for v in neighbors:
-                    if v in visited:
-                        continue
-                    vertices_to_visit.push(v)
-                if vertices_to_visit.size() is 0:
-                    current = None
-                    break
-                current = vertices_to_visit.pop()
-        print(path)
+        # Get all possible paths to destination
+        def get_dfs_paths(starting_vertex, destination_vertex):
+            stack = Stack()
+            stack.push((starting_vertex, starting_vertex))
+            while stack.size() is not 0:
+                current = stack.pop()
+                vertex = current[0]
+                path = current[1]
+                for v in self.vertices[vertex] - set(path):
+                    if v == destination_vertex:
+                        path.append(v)
+                        # must use yield or you will only get the first path that gets to destination
+                        yield path
+                    else:
+                        path.append(v)
+                        stack.push((v, path))
+        generator = get_dfs_paths(starting_vertex, destination_vertex)
+        first_path = True
+        shortest_path = None
+        for path in generator:
+            if first_path:
+                first_path = False
+                shortest_path = path
+            if (len(path) < len(shortest_path)):
+                shortest_path = path
+        return shortest_path
 
     def dfs_recursive(self, starting_vertex, destination_vertex):
         """
@@ -236,7 +227,15 @@ class Graph:
 
         This should be done using recursion.
         """
-        pass  # TODO
+        def get_dfs_paths(starting_vertex, destination_vertex, path=None):
+            if path is None:
+                path = [starting_vertex]
+            if starting_vertex == destination_vertex:
+                yield path
+            for v in self.vertices[starting_vertex] - set(path):
+                path.append(v)
+                yield from get_dfs_paths(v, destination_vertex, path)
+        pass
 
 if __name__ == '__main__':
     graph = Graph()  # Instantiate your graph
