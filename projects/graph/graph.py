@@ -13,19 +13,28 @@ class Graph:
         """
         Add a vertex to the graph.
         """
-        pass  # TODO
+        if vertex_id in self.vertices:
+            raise Exception(f"A vertex with vertex id: {vertex_id} already exists.")
+        else:
+            self.vertices[vertex_id] = set()
 
     def add_edge(self, v1, v2):
         """
         Add a directed edge to the graph.
         """
-        pass  # TODO
+        if v2 not in self.vertices:
+            raise Exception(f'There is not a vertex with id {v2} in the graph.')
+        elif v1 not in self.vertices:
+            raise Exception(f'There is not a vertex with id {v1} in the graph.')
+        else:
+            self.vertices[v1].add(v2)
 
     def get_neighbors(self, vertex_id):
         """
         Get all neighbors (edges) of a vertex.
         """
-        pass  # TODO
+        if vertex_id in self.vertices:
+            return self.vertices[vertex_id]
 
     def bft(self, starting_vertex):
         """
