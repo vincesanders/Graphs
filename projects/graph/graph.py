@@ -57,7 +57,6 @@ class Graph:
             visited[current] = self.vertices[current]
             # vertices_string += f'{str(current)}, '
             print(current)
-            visited[current] = True
             neighbors = self.get_neighbors(current) # get neighbors
             # if no neighbors
             if len(neighbors) is 0:
@@ -99,7 +98,6 @@ class Graph:
             visited[current] = self.vertices[current]
             # vertices_string += f'{str(current)}, '
             print(current)
-            visited[current] = True
             neighbors = self.get_neighbors(current) # get neighbors
             # if no neighbors
             if len(neighbors) is 0:
@@ -158,7 +156,7 @@ class Graph:
             raise Exception(f'There is not a vertex with id {destination_vertex} in the graph.')
         visited = {}
         distance = {}
-        predecessor = {}
+        prev = {}
         vertices_to_visit = Queue()
         visited[starting_vertex] = True
         distance[starting_vertex] = 0
@@ -172,7 +170,7 @@ class Graph:
                 if v not in visited:
                     visited[v] = True
                     distance[v] = distance[current] + 1
-                    predecessor[v] = current
+                    prev[v] = current
                     vertices_to_visit.enqueue(v)
                     if v == destination_vertex:
                         break
@@ -180,9 +178,9 @@ class Graph:
         shortest_path = []
         current = destination_vertex
         shortest_path.append(current)
-        while current in predecessor:
-            shortest_path.insert(0, predecessor[current])
-            current = predecessor[current]
+        while current in prev:
+            shortest_path.insert(0, prev[current])
+            current = prev[current]
         return shortest_path
 
     def dfs(self, starting_vertex, destination_vertex):
