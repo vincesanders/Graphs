@@ -55,7 +55,7 @@ class Graph:
             for v in self.vertices[starting_vertex] - set(path):
                 yield from self.get_dfs_paths(v, destination_vertex, path + [v])
     
-    def dfs(self, starting_vertex, destination_vertex):
+    def dfs(self, starting_vertex, destination_vertex): # O(v * e)
         """
         Return a list containing the longest path from
         starting_vertex to destination_vertex in
@@ -75,17 +75,18 @@ class Graph:
                     longest_path = path
         return longest_path
 
+# O(2pve + n) - p = parent nodes, v = total vertices, e = total edges, n = length of ancestors array
 def earliest_ancestor(ancestors, starting_node):
     graph = Graph()
-    for a in array:
+    for a in array: # O(n)
         graph.add_vertex(a)
     parents = graph.get_parents()
     paths = []
-    for parent in parents:
+    for parent in parents: # O(p)
         paths.append(graph.dfs(parent, starting_node))
     longest_path = None
     first_path = True
-    for path in paths:
+    for path in paths: # O(p)
         if path is None:
             continue
         if first_path:
