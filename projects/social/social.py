@@ -1,3 +1,18 @@
+import random
+
+class Queue():
+    def __init__(self):
+        self.queue = []
+    def enqueue(self, value):
+        self.queue.append(value)
+    def dequeue(self):
+        if self.size() > 0:
+            return self.queue.pop(0)
+        else:
+            return None
+    def size(self):
+        return len(self.queue)
+
 class User:
     def __init__(self, name):
         self.name = name
@@ -42,11 +57,29 @@ class SocialGraph:
         self.last_id = 0
         self.users = {}
         self.friendships = {}
-        # !!!! IMPLEMENT ME
 
         # Add users
+        for i in range(0, num_users):
+            self.add_user(f"User {i}")
 
-        # Create friendships
+        # Create Frienships
+        # Generate all possible friendship combinations
+        possible_friendships = []
+
+        # Avoid duplicates by ensuring the first number is smaller than the second
+        for user_id in self.users:
+            for friend_id in range(user_id + 1, self.last_id + 1):
+                possible_friendships.append((user_id, friend_id))
+
+        # Shuffle the possible friendships
+        random.shuffle(possible_friendships)
+
+        # Create friendships for the first X pairs of the list
+        # X is determined by the formula: num_users * avg_friendships // 2
+        # Need to divide by 2 since each add_friendship() creates 2 friendships
+        for i in range(num_users * avg_friendships // 2):
+            friendship = possible_friendships[i]
+            self.add_friendship(friendship[0], friendship[1])
 
     def get_all_social_paths(self, user_id):
         """
@@ -57,8 +90,21 @@ class SocialGraph:
 
         The key is the friend's ID and the value is the path.
         """
-        visited = {}  # Note that this is a dictionary, not a set
-        # !!!! IMPLEMENT ME
+        # use bft
+        visited = {}
+        visited[user_id] = [user_id] # We don't want to visit ourselves
+        not_visited = Queue()
+        not_visited.enqueue(user_id)
+        while not_visited.size() > 0:
+            current = not_visited.dequeue()
+            friends = self.friendships[current] # get friends of current
+            for friend in friends:
+                if friend not in visited: # if friend hasn't been visited, add to queue
+                    not_visited.enqueue(friend)
+                    path = list(visited[current]) # create a list from the friends visited so far
+                    path.append(friend) # Add friend to list
+                    # add friend to visited
+                    visited[friend] = path # add path from user to this friend as value to this friend's key in dict
         return visited
 
 
@@ -68,3 +114,4 @@ if __name__ == '__main__':
     print(sg.friendships)
     connections = sg.get_all_social_paths(1)
     print(connections)
+    print(sg.get_all_social_paths(1))
