@@ -58,27 +58,47 @@ visited[player.current_room.id] = True
 # Fill this out with directions to walk
 # traversal_path = ['n', 'n']
 traversal_path = []
-rooms_to_visit = Stack()
+rooms_to_visit = []
 
 def traverse():
     found_exit = True
     while found_exit:
         found_exit = False
         exits = player.current_room.get_exits()
-        # go to first unexplored (?) direction
+        # go to first unexplored (?) direction or the direction that ends in an exit
         current = player.current_room
+        possible_rooms = []
+        # try weighted in some direction?
         for direction in exits:
             if current.get_room_in_direction(direction).id not in visited:
-                if found_exit:
-                    rooms_to_visit.push(current.get_room_in_direction(direction).id)
-                else:
-                    player.travel(direction)
-                    traversal_path.append(direction)
-                    visited[player.current_room.id] = True
-                    found_exit = True
+                possible_rooms.append((current.get_room_in_direction(direction), direction))
+        primary_direction_chosen = False
+        if len(possible_rooms) > 0:
+            room_to_traverse = possible_rooms[0]
+            for i in range(len(possible_rooms)):
+                # if one room ends in an exit, take it
+                if len(possible_rooms[i][0].get_exits()) < 2:
+                    room_to_traverse = possible_rooms[i]
+                    break
+                # direction is weighted to the west and south
+                if possible_rooms[i][1] is 'w':
+                    room_to_traverse = possible_rooms[i]
+                    primary_direction_chosen = True
+                    break
+                elif possible_rooms[i][1] is 's' and not primary_direction_chosen:
+                    room_to_traverse = possible_rooms[i]
+            # add other rooms to rooms_to_visit
+            for room in possible_rooms:
+                if room != room_to_traverse:
+                    rooms_to_visit.append(room[0].id)
+            room, direction = room_to_traverse
+            player.travel(direction)
+            traversal_path.append(direction)
+            visited[room.id] = True
+            found_exit = True
         # loop until no unexplored direction
 
-def find_shortest_path_to_unexplored():
+def find_shortest_path_to_unexplored(dest):
     visited_room = set()
 
     q = Queue()
@@ -86,7 +106,7 @@ def find_shortest_path_to_unexplored():
 
     q.enqueue([])
     q2.enqueue(player.current_room)
-    destination = rooms_to_visit.pop()
+    destination = dest
 
     while q.size() > 0:
         path = q.dequeue()
@@ -113,8 +133,24 @@ def find_unexplored(path):
 while len(world.rooms) > len(visited):
     traverse()
     if len(visited) != len(world.rooms):
-        path = find_shortest_path_to_unexplored()
-        find_unexplored(path)
+        # Find the closest of the unexplored rooms
+        paths = []
+        for unvisited in rooms_to_visit:
+            paths.append(find_shortest_path_to_unexplored(unvisited))
+        # iterate through all the paths to the remaining unvisited rooms
+        shortest_path = None
+        first_iter = True
+        for path in paths:
+            if first_iter:
+                shortest_path = path
+                first_iter = False
+                continue
+            if len(path) <= len(shortest_path):
+                shortest_path = path
+        # travel to the closest one
+        find_unexplored(shortest_path)
+        # remove that room from rooms_to_visit
+        rooms_to_visit.remove(player.current_room.id)
 
 
 
