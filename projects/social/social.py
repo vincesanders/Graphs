@@ -92,7 +92,7 @@ class SocialGraph:
         """
         # use bft
         visited = {}
-        visited[user_id] = [user_id] # We don't want to visit ourselves
+        visited[user_id] = [user_id] # We don't want to visit ourselves and this will start our paths
         not_visited = Queue()
         not_visited.enqueue(user_id)
         while not_visited.size() > 0:
